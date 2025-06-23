@@ -1,0 +1,58 @@
+:root {
+  --primary-color: #0d3fa9;
+  --primary-hover: #6e8ccb;
+  --secondary-color: #ffa900;
+  --default-color: #6c757d;
+  --default-hover: #5a6268;
+  --blue-2: #3d65ba;
+  --blue-3: #6e8ccb;
+  --blue-4: #9eb2dd;
+  --blue-5: #cfd9ee;
+  --yellow-2: #ffba33;
+  --yellow-3: #ffcb66;
+  --yellow-4: #ffdd99;
+  --yellow-5: #ffeecc;
+
+  --font-logo: 'Black Ops One', cursive;
+  --font-primary: 'Roboto', sans-serif;
+  
+  --text-dark: #2d3748;
+  --text-light: #f7fafc;
+}
+
+.ant-btn.ant-btn-primary {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.ant-btn.ant-btn-primary:hover,
+.ant-btn.ant-btn-primary:focus {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.ant-btn-default {
+  color: var(--default-color) !important;
+  border-color: var(--default-color) !important;
+}
+
+.ant-btn-default:hover {
+  background: var(--default-color) !important;
+  color: var(--text-light) !important;
+  border-color: var(--default-hover) !important;
+}
+
+body {
+  font-family: var(--font-primary) !important;
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+p {
+  font-weight: 400;
+}

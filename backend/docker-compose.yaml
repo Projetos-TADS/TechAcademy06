@@ -1,0 +1,37 @@
+services:
+  backend:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=mod_05_database
+      - SECRET_KEY=senha_super_secreta
+      - EXPIRES_IN=1d
+    container_name: mod-05-backend
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=mod_05_database
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+volumes:
+  mysql_data:
