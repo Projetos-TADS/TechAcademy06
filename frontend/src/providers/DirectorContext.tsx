@@ -69,7 +69,9 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
           : { prevPage: null, nextPage: null, count: 1, data: [data] }
       );
 
-      toast.success("Cadastro de diretor feito");
+			toast.success("Diretor cadastrado com sucesso!", {
+				toastId: "director-success-toast",
+			});
     } catch (error: any) {
       toast.error(error.response?.data?.message);
     }
@@ -94,7 +96,9 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
           : null
       );
 
-      toast.success("Diretor Atualizado");
+			toast.success("Diretor atualizado com sucesso!", {
+				toastId: "director-success-toast",
+			});
     } catch (error: any) {
       toast.error(error.response?.data?.message);
     }
@@ -120,7 +124,9 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
           : null
       );
 
-      toast.success("Diretor deletado");
+			toast.success("Diretor deletado com sucesso!", {
+				toastId: "director-success-toast",
+			});
     } catch (error: any) {
       toast.error(error.response?.data?.message);
     }

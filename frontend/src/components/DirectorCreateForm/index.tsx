@@ -86,7 +86,7 @@ export const CreateNewDirectorForm = ({ open, onClose }: CreateNewDirectorFormPr
 				/>
 
 				<Form.Item>
-					<Button type="primary" htmlType="submit" loading={isSubmitting} block>
+					<Button id="create-diretor" type="primary" htmlType="submit" loading={isSubmitting} block>
 						Cadastrar
 					</Button>
 				</Form.Item>

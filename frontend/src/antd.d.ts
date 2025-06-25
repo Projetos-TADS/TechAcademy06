@@ -35,6 +35,7 @@ declare module "antd" {
 		size?: "large" | "middle" | "small";
 		danger?: boolean;
 		title?: string;
+		id?: string;
 	}
 
 	export interface ModalProps {

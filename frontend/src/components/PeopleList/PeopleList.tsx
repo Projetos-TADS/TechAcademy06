@@ -32,6 +32,8 @@ export const PeopleList = ({ title, people, onEdit, onDelete, onCreate }: People
 		return `${dia}/${mes}/${ano}`;
 	};
 
+	const titleLower = title.toLowerCase();
+
 	return (
 		<div style={{ padding: "1.5rem", marginTop: "1rem" }}>
 			<div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem" }}>
@@ -45,13 +47,15 @@ export const PeopleList = ({ title, people, onEdit, onDelete, onCreate }: People
 					{`LISTA DE ${title}ES`}
 				</h1>
 				<Button
+					id={`new-${titleLower}`}
 					type="primary"
 					icon={<PlusOutlined />}
 					onClick={onCreate}
-					title={`Novo ${title.toLowerCase()}`}
+					title={`Novo ${titleLower}`}
 				/>
 			</div>
 			<div
+				id={`${titleLower}-list`}
 				style={{
 					display: "grid",
 					gridTemplateColumns: screens.lg
@@ -67,13 +71,17 @@ export const PeopleList = ({ title, people, onEdit, onDelete, onCreate }: People
 						key={person.id}
 						title={person.name}
 						actions={[
-							<Button icon={<EditOutlined />} onClick={() => onEdit(person.id)} />,
+							<Button
+								icon={<EditOutlined />}
+								id={`edit-${titleLower}`}
+								onClick={() => onEdit(person.id)}
+							/>,
 							<Popconfirm
-								title={`Tem certeza que deseja excluir este ${title.toLowerCase()}?`}
+								title={`Tem certeza que deseja excluir este ${titleLower}?`}
 								onConfirm={() => onDelete(person.id)}
 								okText="Sim"
 								cancelText="Não">
-								<Button icon={<DeleteOutlined />} danger />
+								<Button icon={<DeleteOutlined />} id={`delete-${titleLower}`} danger />
 							</Popconfirm>,
 						]}>
 						<Space direction="vertical">
