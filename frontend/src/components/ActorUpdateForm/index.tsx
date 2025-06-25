@@ -91,7 +91,7 @@ export const ActorUpdateForm = ({ actor, open, onClose }: ActorUpdateFormProps) 
 				/>
 
 				<Form.Item>
-					<Button type="primary" htmlType="submit" loading={isSubmitting} block>
+					<Button id="edit-ator" type="primary" htmlType="submit" loading={isSubmitting} block>
 						Salvar
 					</Button>
 				</Form.Item>

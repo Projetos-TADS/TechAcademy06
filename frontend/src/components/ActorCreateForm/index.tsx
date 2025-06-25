@@ -81,7 +81,7 @@ export const CreateNewActorForm = ({ open, onClose }: CreateNewActorFormProps) =
 				/>
 
 				<Form.Item>
-					<Button type="primary" htmlType="submit" loading={isSubmitting} block>
+					<Button id="create-ator" type="primary" htmlType="submit" loading={isSubmitting} block>
 						Cadastrar
 					</Button>
 				</Form.Item>
