@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button } from "antd";
 import Title from "antd/es/typography/Title";
-import { SignupForm } from "../../components/signupForm";
+import { SignupForm } from "../../components/SignupForm";
 
 export const SignupPage = () => {
 	const navigate = useNavigate();

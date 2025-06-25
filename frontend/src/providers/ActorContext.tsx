@@ -62,7 +62,11 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
           Authorization: `Bearer ${userToken}`,
         },
       });
-      setActorsList([...actorsList, data]);
+      setActorsList((prev) =>
+        prev
+          ? { ...prev, data: [...prev.data, data] }
+          : { prevPage: null, nextPage: null, count: 1, data: [data] }
+      );
       toast.success("Cadastro de ator feito");
     } catch (error: any) {
       toast.error(error.response?.data?.message);
@@ -77,11 +81,14 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
         headers: { Authorization: `Bearer ${userToken}` },
       });
 
-      const updatedActor = actorsList.data.filter(
-        (currentActor) => currentActor.actorId !== actorId
+      setActorsList((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.map((actor) => (actor.actorId === actorId ? data : actor)),
+            }
+          : null
       );
-
-      setActorsList([...updatedActor, data]);
 
       toast.success("Ator Atualizado");
     } catch (error: any) {
@@ -99,10 +106,16 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
         },
       });
 
-      const updatedActorList = actorsList.data.filter(
-        (currentActor) => currentActor.actorId !== actorId
+      setActorsList((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.filter((actor) => actor.actorId !== actorId),
+              count: prev.count - 1, // optional: decrease count
+            }
+          : null
       );
-      setActorsList(updatedActorList);
+
       toast.success("Ator deletado");
     } catch (error: any) {
       toast.error(error.response?.data?.message);

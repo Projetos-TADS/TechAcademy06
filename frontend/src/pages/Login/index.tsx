@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button } from "antd";
 import Title from "antd/es/typography/Title";
-import { LoginForm } from "../../components/signinForm";
+import { LoginForm } from "../../components/SigninForm";
 
 export const LoginPage = () => {
 	const navigate = useNavigate();

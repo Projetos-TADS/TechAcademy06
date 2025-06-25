@@ -62,7 +62,13 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
           Authorization: `Bearer ${userToken}`,
         },
       });
-      setDirectorsList([...directorsList, data]);
+
+      setDirectorsList((prev) =>
+        prev
+          ? { ...prev, data: [...prev.data, data], count: prev.count + 1 }
+          : { prevPage: null, nextPage: null, count: 1, data: [data] }
+      );
+
       toast.success("Cadastro de diretor feito");
     } catch (error: any) {
       toast.error(error.response?.data?.message);
@@ -77,11 +83,16 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
         headers: { Authorization: `Bearer ${userToken}` },
       });
 
-      const updatedDirectors = directorsList.filter(
-        (currentDirector) => currentDirector.directorId !== directorId
+      setDirectorsList((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.map((director) =>
+                director.directorId === directorId ? data : director
+              ),
+            }
+          : null
       );
-
-      setDirectorsList([...updatedDirectors, data]);
 
       toast.success("Diretor Atualizado");
     } catch (error: any) {
@@ -99,10 +110,16 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
         },
       });
 
-      const updatedDirectorsList = directorsList.filter(
-        (currentDirector) => currentDirector.directorId !== directorId
+      setDirectorsList((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.filter((director) => director.directorId !== directorId),
+              count: prev.count - 1,
+            }
+          : null
       );
-      setDirectorsList(updatedDirectorsList);
+
       toast.success("Diretor deletado");
     } catch (error: any) {
       toast.error(error.response?.data?.message);
