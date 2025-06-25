@@ -91,7 +91,7 @@ export const DirectorUpdateForm = ({ director, open, onClose }: DirectorUpdateFo
 				/>
 
 				<Form.Item>
-					<Button type="primary" htmlType="submit" loading={isSubmitting} block>
+					<Button id="edit-diretor" type="primary" htmlType="submit" loading={isSubmitting} block>
 						Salvar
 					</Button>
 				</Form.Item>
