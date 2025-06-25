@@ -6,9 +6,9 @@ test.describe("Login Page", () => {
 		//TODO:confirmar se será essa porta com Docker
 		await page.goto("http://localhost:5173/");
 
-		await page.fill('input[type="email"]', "test@mail.com");
-		await page.fill('input[type="password"]', "password123");
-		await page.click('button[type="submit"]');
+		await page.fill("input[type='email']", "test@mail.com");
+		await page.fill("input[type='password']", "password123");
+		await page.click("button[type='submit']");
 
 		await expect(page).toHaveTitle("BLOCKBUSTER");
 		await expect(page).toHaveURL("http://localhost:5173/movies");
@@ -17,9 +17,9 @@ test.describe("Login Page", () => {
 	test("Unsuccessful login shows toast error message", async ({ page }) => {
 		await page.goto("http://localhost:5173/");
 
-		await page.fill('input[type="email"]', "test@mail.com");
-		await page.fill('input[type="password"]', "password1234");
-		await page.click('button[type="submit"]');
+		await page.fill("input[type='email']", "test@mail.com");
+		await page.fill("input[type='password']", "password1234");
+		await page.click("button[type='submit']");
 
 		const errorToast = page.locator("#login-error-toast");
 		await expect(errorToast).toBeVisible();

@@ -14,7 +14,7 @@ test.describe("Signup Page", () => {
 		await page.fill("input[name='password']", "password123");
 		await page.fill("input[name='confirmPassword']", "password123");
 
-		await page.click('button[type="submit"]');
+		await page.click("button[type='submit']");
 
 		//Success toast
 		const successToast = page.locator("#signup-success-toast");
@@ -23,10 +23,10 @@ test.describe("Signup Page", () => {
 		await expect(page).toHaveURL("http://localhost:5173/");
 
 		//Login
-		await page.fill('input[type="email"]', "e2etest@mail.com");
-		await page.fill('input[type="password"]', "password123");
+		await page.fill("input[type='email']", "e2etest@mail.com");
+		await page.fill("input[type='password']", "password123");
 
-		await page.click('button[type="submit"]');
+		await page.click("button[type='submit']");
 
 		//Blockbuster movies homepage redirection
 		await expect(page).toHaveURL("http://localhost:5173/movies");
@@ -43,7 +43,7 @@ test.describe("Signup Page", () => {
 		await page.fill("input[name='password']", "password123");
 		await page.fill("input[name='confirmPassword']", "password123");
 
-		await page.click('button[type="submit"]');
+		await page.click("button[type='submit']");
 
 		const errorToast = page.locator("#signup-error-toast");
 		await expect(errorToast).toBeVisible();
@@ -60,7 +60,7 @@ test.describe("Signup Page", () => {
 		await page.fill("input[name='password']", "password123");
 		await page.fill("input[name='confirmPassword']", "password123");
 
-		await page.click('button[type="submit"]');
+		await page.click("button[type='submit']");
 
 		const errorToast = page.locator("#signup-error-toast");
 		await expect(errorToast).toBeVisible();
@@ -77,7 +77,7 @@ test.describe("Signup Page", () => {
 		await page.fill("input[name='password']", "password123");
 		await page.fill("input[name='confirmPassword']", "password12");
 
-		await page.click('button[type="submit"]');
+		await page.click("button[type='submit']");
 
 		await expect(page.locator(".ant-form-item-explain-error")).toBeVisible();
 		await expect(page.locator(".ant-form-item-explain-error")).toHaveText("Password do not match");
