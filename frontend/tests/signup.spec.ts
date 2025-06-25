@@ -31,7 +31,40 @@ test.describe("Signup Page", () => {
 		//Blockbuster movies homepage redirection
 		await expect(page).toHaveURL("http://localhost:5173/movies");
 		await expect(page).toHaveTitle("BLOCKBUSTER");
+	});
 
+	// Unsuccessful registration (CPF)
+	test("Duplicated CPF and toast error message", async ({ page }) => {
+		await page.goto("http://localhost:5173/signup");
+
+		await page.fill("input[name='name']", "E2E Test");
+		await page.fill("input[name='email']", "e2etest@mail.com");
+		await page.getByPlaceholder("000.000.000-00").fill("00000000191");
+		await page.fill("input[name='password']", "password123");
+		await page.fill("input[name='confirmPassword']", "password123");
+
+		await page.click('button[type="submit"]');
+
+		const errorToast = page.locator("#signup-error-toast");
+		await expect(errorToast).toBeVisible();
+		await expect(errorToast).toHaveText("This CPF is already in use by another user.");
+	});
+
+	// Unsuccessful registration (email)
+	test("Duplicated email and toast error message", async ({ page }) => {
+		await page.goto("http://localhost:5173/signup");
+
+		await page.fill("input[name='name']", "E2E Test");
+		await page.fill("input[name='email']", "e2etest@mail.com");
+		await page.getByPlaceholder("000.000.000-00").fill("00000000353");
+		await page.fill("input[name='password']", "password123");
+		await page.fill("input[name='confirmPassword']", "password123");
+
+		await page.click('button[type="submit"]');
+
+		const errorToast = page.locator("#signup-error-toast");
+		await expect(errorToast).toBeVisible();
+		await expect(errorToast).toHaveText("This email is already in use by another active user.");
 	});
 
 	// Unsuccessful registration (password)
