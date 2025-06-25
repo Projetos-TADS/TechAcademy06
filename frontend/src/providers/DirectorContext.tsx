@@ -53,61 +53,66 @@ export const DirectorProvider = ({ children }: IDirectorProviderProps) => {
     directorsLoad();
   }, []);
 
-  const directorCreate = async (formData: TDirectorCreateFormValues) => {
-    const userToken: string | null = localStorage.getItem("@USERTOKEN");
+	const directorCreate = async (formData: TDirectorCreateFormValues) => {
+		const userToken: string | null = localStorage.getItem("@USERTOKEN");
 
-    try {
-      const { data } = await api.post<IDirector>("/directors", formData, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      setDirectorsList([...directorsList, data]);
-      toast.success("Cadastro de diretor feito");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message);
-    }
-  };
+		try {
+			const { data } = await api.post<IDirector>("/directors", formData, {
+				headers: {
+					Authorization: `Bearer ${userToken}`,
+				},
+			});
+			setDirectorsList([...directorsList, data]);
+			toast.success("Diretor cadastrado com sucesso!", {
+				toastId: "director-success-toast",
+			});
+		} catch (error: any) {
+			toast.error(error.response?.data?.message);
+		}
+	};
 
-  const directorUpdate = async (newDirectorData: TDirectorUpdateFormValues, directorId: string) => {
-    const userToken: string | null = localStorage.getItem("@USERTOKEN");
+	const directorUpdate = async (newDirectorData: TDirectorUpdateFormValues, directorId: string) => {
+		const userToken: string | null = localStorage.getItem("@USERTOKEN");
 
-    try {
-      const { data } = await api.patch<IDirector>(`/directors/${directorId}`, newDirectorData, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
+		try {
+			const { data } = await api.patch<IDirector>(`/directors/${directorId}`, newDirectorData, {
+				headers: { Authorization: `Bearer ${userToken}` },
+			});
 
-      const updatedDirectors = directorsList.filter(
-        (currentDirector) => currentDirector.directorId !== directorId
-      );
+			const updatedDirectors = directorsList.filter(
+				currentDirector => currentDirector.directorId !== directorId
+			);
 
-      setDirectorsList([...updatedDirectors, data]);
+			setDirectorsList([...updatedDirectors, data]);
+			toast.success("Diretor atualizado com sucesso!", {
+				toastId: "director-success-toast",
+			});
+		} catch (error: any) {
+			toast.error(error.response?.data?.message);
+		}
+	};
 
-      toast.success("Diretor Atualizado");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message);
-    }
-  };
+	const directorDelete = async (directorId: string) => {
+		const userToken: string | null = localStorage.getItem("@USERTOKEN");
 
-  const directorDelete = async (directorId: string) => {
-    const userToken: string | null = localStorage.getItem("@USERTOKEN");
+		try {
+			await api.delete(`/directors/${directorId}`, {
+				headers: {
+					Authorization: `Bearer ${userToken}`,
+				},
+			});
 
-    try {
-      await api.delete(`/directors/${directorId}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-
-      const updatedDirectorsList = directorsList.filter(
-        (currentDirector) => currentDirector.directorId !== directorId
-      );
-      setDirectorsList(updatedDirectorsList);
-      toast.success("Diretor deletado");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message);
-    }
-  };
+			const updatedDirectorsList = directorsList.filter(
+				currentDirector => currentDirector.directorId !== directorId
+			);
+			setDirectorsList(updatedDirectorsList);
+			toast.success("Diretor deletado com sucesso!", {
+				toastId: "director-success-toast",
+			});
+		} catch (error: any) {
+			toast.error(error.response?.data?.message);
+		}
+	};
 
   return (
     <DirectorContext.Provider
