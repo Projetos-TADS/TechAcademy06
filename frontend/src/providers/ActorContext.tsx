@@ -53,64 +53,80 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
     actorsLoad();
   }, []);
 
-	const actorCreate = async (formData: TActorCreateFormValues) => {
-		const userToken: string | null = localStorage.getItem("@USERTOKEN");
+  const actorCreate = async (formData: TActorCreateFormValues) => {
+    const userToken: string | null = localStorage.getItem("@USERTOKEN");
 
-		try {
-			const { data } = await api.post<IActor>("/actors", formData, {
-				headers: {
-					Authorization: `Bearer ${userToken}`,
-				},
-			});
-			setActorsList([...actorsList, data]);
+    try {
+      const { data } = await api.post<IActor>("/actors", formData, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      setActorsList((prev) =>
+        prev
+          ? { ...prev, data: [...prev.data, data] }
+          : { prevPage: null, nextPage: null, count: 1, data: [data] }
+      );
 			toast.success("Ator cadastrado com sucesso!", {
 				toastId: "actor-success-toast",
 			});
-		} catch (error: any) {
-			toast.error(error.response?.data?.message);
-		}
-	};
+    } catch (error: any) {
+      toast.error(error.response?.data?.message);
+    }
+  };
 
-	const actorUpdate = async (newActorData: TActorUpdateFormValues, actorId: string) => {
-		const userToken: string | null = localStorage.getItem("@USERTOKEN");
+  const actorUpdate = async (newActorData: TActorUpdateFormValues, actorId: string) => {
+    const userToken: string | null = localStorage.getItem("@USERTOKEN");
 
-		try {
-			const { data } = await api.patch<IActor>(`/actors/${actorId}`, newActorData, {
-				headers: { Authorization: `Bearer ${userToken}` },
-			});
+    try {
+      const { data } = await api.patch<IActor>(`/actors/${actorId}`, newActorData, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
 
-			const updatedActor = actorsList.data.filter(currentActor => currentActor.actorId !== actorId);
+      setActorsList((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.map((actor) => (actor.actorId === actorId ? data : actor)),
+            }
+          : null
+      );
 
-			setActorsList([...updatedActor, data]);
 			toast.success("Ator atualizado com sucesso!", {
 				toastId: "actor-success-toast",
 			});
-		} catch (error: any) {
-			toast.error(error.response?.data?.message);
-		}
-	};
+    } catch (error: any) {
+      toast.error(error.response?.data?.message);
+    }
+  };
 
-	const actorDelete = async (actorId: string) => {
-		const userToken: string | null = localStorage.getItem("@USERTOKEN");
+  const actorDelete = async (actorId: string) => {
+    const userToken: string | null = localStorage.getItem("@USERTOKEN");
 
-		try {
-			await api.delete(`/actors/${actorId}`, {
-				headers: {
-					Authorization: `Bearer ${userToken}`,
-				},
-			});
+    try {
+      await api.delete(`/actors/${actorId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
 
-			const updatedActorList = actorsList.data.filter(
-				currentActor => currentActor.actorId !== actorId
-			);
-			setActorsList(updatedActorList);
+      setActorsList((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.filter((actor) => actor.actorId !== actorId),
+              count: prev.count - 1, // optional: decrease count
+            }
+          : null
+      );
+
 			toast.success("Ator deletado com sucesso!", {
 				toastId: "actor-success-toast",
 			});
-		} catch (error: any) {
-			toast.error(error.response?.data?.message);
-		}
-	};
+    } catch (error: any) {
+      toast.error(error.response?.data?.message);
+    }
+  };
 
   return (
     <ActorContext.Provider
