@@ -10,6 +10,7 @@ test.describe("Login Page", () => {
 		await page.fill('input[type="password"]', "password123");
 		await page.click('button[type="submit"]');
 
+		await expect(page).toHaveTitle("BLOCKBUSTER");
 		await expect(page).toHaveURL("http://localhost:5173/movies");
 	});
 
