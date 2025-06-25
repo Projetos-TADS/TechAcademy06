@@ -25,6 +25,16 @@ module.exports = {
     const usersData: UserData[] = [
       {
         userId: uuidv4(),
+        name: "Teste",
+        email: "test@mail.com",
+        password: bcryptjs.hashSync("password123", saltRounds),
+        cpf: "00000000191",
+        admin: true,
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        userId: uuidv4(),
         name: "Lucas",
         email: "lucas@mail.com",
         password: bcryptjs.hashSync("123456", saltRounds),

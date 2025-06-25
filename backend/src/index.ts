@@ -8,7 +8,7 @@ import cors, { CorsOptions } from "cors";
 const app: Application = express();
 
 const corsOptions: CorsOptions = {
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://blockbuster.local"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
