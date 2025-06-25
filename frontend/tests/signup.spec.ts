@@ -10,15 +10,17 @@ test.describe("Signup Page", () => {
 		//Registration
 		await page.fill("input[name='name']", "E2E Test");
 		await page.fill("input[name='email']", "e2etest@mail.com");
-		await page.getByPlaceholder("000.000.000-00").fill("00000000000");
+		await page.getByPlaceholder("000.000.000-00").fill("00000000272");
 		await page.fill("input[name='password']", "password123");
 		await page.fill("input[name='confirmPassword']", "password123");
 
 		await page.click('button[type="submit"]');
 
 		//Success toast
-		// await expect(page.locator(".Toastify__toast")).toBeTruthy();
-		// await expect(page.getByText("Usuário cadastrado com sucesso!")).toBeTruthy();
+		const successToast = page.locator("#signup-success-toast");
+		await expect(successToast).toBeVisible();
+		await expect(successToast).toHaveText("Usuário cadastrado com sucesso!");
+		await expect(page).toHaveURL("http://localhost:5173/");
 
 		//Login
 		await page.fill('input[type="email"]', "e2etest@mail.com");
@@ -27,7 +29,9 @@ test.describe("Signup Page", () => {
 		await page.click('button[type="submit"]');
 
 		//Blockbuster movies homepage redirection
-		await expect(page.getByTitle("BLOCKBUSTER")).toBeTruthy();
+		await expect(page).toHaveURL("http://localhost:5173/movies");
+		await expect(page).toHaveTitle("BLOCKBUSTER");
+
 	});
 
 	// Unsuccessful registration (password)
