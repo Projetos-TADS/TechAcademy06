@@ -24,6 +24,11 @@ export interface IMovie {
   duration: number;
   rating: number;
   urlImage: string;
+  images?: {
+    id: number;
+    filename: string;
+    path: string;
+  }[];
   actors: IActor[];
   directors: IDirector[];
 }
@@ -133,20 +138,30 @@ export const MovieProvider = ({ children }: IMovieProviderProps) => {
 
   const movieCreate = async (formData: TMovieCreateFormValues): Promise<void> => {
     const userToken: string | null = localStorage.getItem("@USERTOKEN");
-    const convertedFormData = {
-      ...formData,
-      duration: Number(formData.duration),
-      rating: Number(formData.rating),
-      releaseYear: Number(formData.releaseYear),
-    };
+    const data = new FormData();
+
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("releaseYear", String(formData.releaseYear));
+    data.append("duration", String(formData.duration));
+    data.append("rating", String(formData.rating));
+
+    if (formData.images && formData.images.length > 0) {
+      formData.images.forEach((file: any) => {
+        const fileToUpload = file.originFileObj || file;
+        data.append("images", fileToUpload);
+      });
+    }
 
     try {
-      const { data } = await api.post<IMovie>("/movies", convertedFormData, {
+      const response = await api.post<IMovie>("/movies", data, {
         headers: {
           Authorization: `Bearer ${userToken}`,
+          "Content-Type": "multipart/form-data",
         },
       });
-      setMovieList([...moviesList, data]);
+
+      setMovieList([...moviesList, response.data]);
       await moviesLoad(currentPage, itemsPerPage);
       toast.success("Cadastro de filme feito");
     } catch (error: any) {

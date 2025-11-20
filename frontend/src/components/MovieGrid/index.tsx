@@ -7,6 +7,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { Button, Select, Tag, Pagination, Popconfirm } from "antd";
+import Carousel from "antd/es/carousel";
 import Card from "antd/es/card";
 import Grid from "antd/es/grid";
 import Rate from "antd/es/rate";
@@ -20,6 +21,8 @@ import { CreateNewMovieForm } from "../../components/MovieCreateForm";
 const { Meta } = Card;
 const { Option } = Select;
 const { useBreakpoint } = Grid;
+
+const BASE_URL = "http://localhost:3000/";
 
 interface MovieGridProps {
   editingMovie: IMovie | undefined;
@@ -69,6 +72,21 @@ export const MovieGrid = ({ editingMovie, editingMovieId, setEditingMovieId }: M
     padding: "1.5rem",
   };
 
+  const carouselStyle: React.CSSProperties = {
+    height: "30rem",
+    color: "#fff",
+    lineHeight: "30rem",
+    textAlign: "center",
+    background: "#364d79",
+    overflow: "hidden",
+  };
+
+  const imageStyle: React.CSSProperties = {
+    width: "100%",
+    height: "30rem",
+    objectFit: "cover",
+  };
+
   return (
     <div style={{ padding: "1.5rem", marginTop: "1rem" }}>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem" }}>
@@ -99,11 +117,21 @@ export const MovieGrid = ({ editingMovie, editingMovieId, setEditingMovieId }: M
             hoverable
             style={{ cursor: "default" }}
             cover={
-              <img
-                alt={currentMovie.title}
-                src={currentMovie.urlImage}
-                style={{ height: "30rem", objectFit: "cover" }}
-              />
+              (currentMovie as any).images && (currentMovie as any).images.length > 0 ? (
+                <Carousel autoplay>
+                  {(currentMovie as any).images.map((img: any) => (
+                    <div key={img.id} style={carouselStyle}>
+                      <img
+                        src={img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`}
+                        alt={currentMovie.title}
+                        style={imageStyle}
+                      />
+                    </div>
+                  ))}
+                </Carousel>
+              ) : (
+                <img alt={currentMovie.title} src={currentMovie.urlImage} style={imageStyle} />
+              )
             }
             actions={[
               favoritesList?.some((fav) => fav.movieId === currentMovie.movieId) ? (

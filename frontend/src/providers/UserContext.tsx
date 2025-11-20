@@ -2,8 +2,8 @@ import { createContext, useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { TSignupFormValues } from "../components/SignupForm/signupFormSchema";
-import { TLoginFormValues } from "../components/SigninForm/loginFormSchema";
+import { TSignupFormValues } from "../components/signupForm/signupFormSchema";
+import { TLoginFormValues } from "../components/signinForm/loginFormSchema";
 import { TUserUpdateFormValues } from "../components/UserUpdateForm/userUpdateFormSchema";
 
 interface IUserProviderProps {
@@ -109,45 +109,45 @@ export const UserProvider = ({ children }: IUserProviderProps) => {
     userAutoLogin();
   }, []);
 
-	const userSignin = async (
-		formData: TLoginFormValues,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => {
-		try {
-			setLoading(true);
-			const { data } = await api.post<IUserSigninResponse>("/login", formData);
-			localStorage.setItem("@USERTOKEN", data.token);
-			localStorage.setItem("@USERID", data.user.userId);
-			setUser(data.user);
-			navigate("/movies");
-		} catch (error: any) {
-			toast.error("Credenciais inválidas", {
-				toastId: "login-error-toast",
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
+  const userSignin = async (
+    formData: TLoginFormValues,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    try {
+      setLoading(true);
+      const { data } = await api.post<IUserSigninResponse>("/login", formData);
+      localStorage.setItem("@USERTOKEN", data.token);
+      localStorage.setItem("@USERID", data.user.userId);
+      setUser(data.user);
+      navigate("/movies");
+    } catch (error: any) {
+      toast.error("Credenciais inválidas", {
+        toastId: "login-error-toast",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-	const userSignup = async (
-		formData: TSignupFormValues,
-		setLoading: React.Dispatch<React.SetStateAction<boolean>>
-	) => {
-		try {
-			setLoading(true);
-			await api.post<IUser>("/users", formData);
-			navigate("/");
-			toast.success("Usuário cadastrado com sucesso!", {
-				toastId: "signup-success-toast",
-			});
-		} catch (error: any) {
-			toast.error(error.response?.data?.message, {
-				toastId: "signup-error-toast",
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
+  const userSignup = async (
+    formData: TSignupFormValues,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    try {
+      setLoading(true);
+      await api.post<IUser>("/users", formData);
+      navigate("/");
+      toast.success("Usuário cadastrado com sucesso!", {
+        toastId: "signup-success-toast",
+      });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message, {
+        toastId: "signup-error-toast",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const userLogout = async () => {
     localStorage.removeItem("@USERTOKEN");

@@ -4,6 +4,7 @@ import { setupSwagger } from "./config/swagger";
 import routes from "./routes/";
 import middlewares from "./middlewares";
 import cors, { CorsOptions } from "cors";
+import path from "path";
 
 const app: Application = express();
 
@@ -16,6 +17,7 @@ const corsOptions: CorsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
 app.use("/v1/users", routes.userRoutes);
 app.use("/v1/login", routes.sessionRoutes);
 app.use("/v1/movies", routes.movieRoutes);

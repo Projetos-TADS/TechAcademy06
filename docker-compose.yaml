@@ -6,6 +6,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
+    ports:
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     restart: always
@@ -33,6 +35,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - PORT=${PORT}
+    volumes:
+      - ./backend/uploads:/app-backend/uploads
     healthcheck:
       test: ["CMD", "nc", "-z", "database", "3306"]
       interval: 10s

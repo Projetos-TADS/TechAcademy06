@@ -21,7 +21,8 @@ const getMovieById = async (request: Request, response: Response): Promise<Respo
 };
 
 const createMovie = async (request: Request, response: Response): Promise<Response> => {
-  const movie: MovieReturn = await movieServices.createMovie(request.body);
+  const files = request.files as Express.Multer.File[];
+  const movie: MovieReturn = await movieServices.createMovie(request.body, files);
 
   return response.status(201).json(movie);
 };
@@ -29,8 +30,9 @@ const createMovie = async (request: Request, response: Response): Promise<Respon
 const updateMovie = async (request: Request, response: Response): Promise<Response> => {
   const payLoad: MovieUpdate = request.body;
   const foundMovie: MovieModel = response.locals.movie;
+  const files = request.files as Express.Multer.File[];
 
-  const movie: MovieReturn = await movieServices.updateMovie(foundMovie, payLoad);
+  const movie: MovieReturn = await movieServices.updateMovie(foundMovie, payLoad, files);
 
   return response.status(200).json(movie);
 };
