@@ -34,8 +34,9 @@ export const MovieUpdateForm = ({ movie, onClose, visible }: MovieUpdateFormProp
     },
   });
 
-  const submit: SubmitHandler<TMovieUpdateFormValues> = (newMovieData) => {
-    movieUpdate(newMovieData, movie.movieId);
+  const submit: SubmitHandler<TMovieUpdateFormValues> = async (newMovieData) => {
+    await movieUpdate(newMovieData, movie.movieId);
+    reset();
     onClose();
   };
 
@@ -158,9 +159,9 @@ export const MovieUpdateForm = ({ movie, onClose, visible }: MovieUpdateFormProp
         <Controller
           name="images"
           control={control}
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <Form.Item
-              label="Adicionar Novas Imagens (Máx 5 total)"
+              label="Adicionar Novas Imagens (Máx 5 por vez)"
               validateStatus={errors.images ? "error" : ""}
               help={errors.images?.message as string}
             >
@@ -171,11 +172,8 @@ export const MovieUpdateForm = ({ movie, onClose, visible }: MovieUpdateFormProp
                 maxCount={5}
                 beforeUpload={() => false}
                 accept=".jpg,.jpeg,.png"
-                fileList={(field.value as UploadFile[]) || []}
-                onChange={({ fileList }) => {
-                  field.onChange(fileList);
-                  field.onBlur?.();
-                }}
+                fileList={(value as UploadFile[]) || []}
+                onChange={({ fileList }) => onChange(fileList)}
               >
                 <Button icon={<UploadOutlined />}>Selecionar Imagens</Button>
               </Upload>

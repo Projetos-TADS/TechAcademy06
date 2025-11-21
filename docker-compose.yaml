@@ -37,6 +37,7 @@ services:
       - PORT=${PORT}
     volumes:
       - ./backend/uploads:/app-backend/uploads
+      - ./backend/src:/app-backend/src
     healthcheck:
       test: ["CMD", "nc", "-z", "database", "3306"]
       interval: 10s

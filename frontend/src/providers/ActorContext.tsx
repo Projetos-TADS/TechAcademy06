@@ -67,9 +67,9 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
           ? { ...prev, data: [...prev.data, data] }
           : { prevPage: null, nextPage: null, count: 1, data: [data] }
       );
-			toast.success("Ator cadastrado com sucesso!", {
-				toastId: "actor-success-toast",
-			});
+      toast.success("Ator cadastrado com sucesso!", {
+        toastId: "actor-success-toast",
+      });
     } catch (error: any) {
       toast.error(error.response?.data?.message);
     }
@@ -92,9 +92,9 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
           : null
       );
 
-			toast.success("Ator atualizado com sucesso!", {
-				toastId: "actor-success-toast",
-			});
+      toast.success("Ator atualizado com sucesso!", {
+        toastId: "actor-success-toast",
+      });
     } catch (error: any) {
       toast.error(error.response?.data?.message);
     }
@@ -115,14 +115,14 @@ export const ActorProvider = ({ children }: IActorProviderProps) => {
           ? {
               ...prev,
               data: prev.data.filter((actor) => actor.actorId !== actorId),
-              count: prev.count - 1, // optional: decrease count
+              count: prev.count - 1,
             }
           : null
       );
 
-			toast.success("Ator deletado com sucesso!", {
-				toastId: "actor-success-toast",
-			});
+      toast.success("Ator deletado com sucesso!", {
+        toastId: "actor-success-toast",
+      });
     } catch (error: any) {
       toast.error(error.response?.data?.message);
     }

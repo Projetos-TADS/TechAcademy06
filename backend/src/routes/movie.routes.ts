@@ -28,6 +28,7 @@ movieRoutes.get("/:movieId", movieControllers.getMovieById);
 movieRoutes.patch(
   "/:movieId",
   middlewares.isAdmin,
+  upload.array("images", 5),
   middlewares.validateBody(movieUpdateSchema),
   movieControllers.updateMovie
 );

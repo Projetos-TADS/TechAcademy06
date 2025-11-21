@@ -6,10 +6,9 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 export const movieUpdateFormSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
-  releaseYear: z.number().int().min(1888).max(new Date().getFullYear()).optional(),
-  duration: z.number().int().min(1).optional(),
-  rating: z.number().min(0).max(5).optional(),
-  urlImage: z.string().optional(),
+  releaseYear: z.coerce.number().int().min(1888).max(new Date().getFullYear()).optional(),
+  duration: z.coerce.number().int().min(1).optional(),
+  rating: z.coerce.number().min(0).max(5).optional(),
   images: z
     .any()
     .optional()

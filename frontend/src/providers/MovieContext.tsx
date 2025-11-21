@@ -157,7 +157,6 @@ export const MovieProvider = ({ children }: IMovieProviderProps) => {
       const response = await api.post<IMovie>("/movies", data, {
         headers: {
           Authorization: `Bearer ${userToken}`,
-          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -165,21 +164,39 @@ export const MovieProvider = ({ children }: IMovieProviderProps) => {
       await moviesLoad(currentPage, itemsPerPage);
       toast.success("Cadastro de filme feito");
     } catch (error: any) {
-      toast.error(error.response?.data?.message);
+      console.error(error);
+      toast.error(error.response?.data?.message || "Erro ao criar filme");
     }
   };
 
   const movieUpdate = async (newMovieData: TMovieUpdateFormValues, movieId: string) => {
     const userToken: string | null = localStorage.getItem("@USERTOKEN");
+    const data = new FormData();
+
+    if (newMovieData.title) data.append("title", newMovieData.title);
+    if (newMovieData.description) data.append("description", newMovieData.description);
+    if (newMovieData.releaseYear) data.append("releaseYear", String(newMovieData.releaseYear));
+    if (newMovieData.duration) data.append("duration", String(newMovieData.duration));
+    if (newMovieData.rating !== undefined) data.append("rating", String(newMovieData.rating));
+
+    if (newMovieData.images && newMovieData.images.length > 0) {
+      newMovieData.images.forEach((file: any) => {
+        const fileToUpload = file.originFileObj || file;
+        data.append("images", fileToUpload);
+      });
+    }
 
     try {
-      const { data } = await api.patch<IMovie>(`/movies/${movieId}`, newMovieData, {
+      const { data: updatedMovieData } = await api.patch<IMovie>(`/movies/${movieId}`, data, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
 
-      const updatedMovie = moviesList.filter((currentMovie) => currentMovie.movieId !== movieId);
+      const updatedMovieList = moviesList.map((movie) =>
+        movie.movieId === movieId ? updatedMovieData : movie
+      );
 
-      setMovieList([...updatedMovie, data]);
+      setMovieList(updatedMovieList);
+      await moviesLoad(currentPage, itemsPerPage);
 
       toast.success("Filme atualizado");
     } catch (error: any) {

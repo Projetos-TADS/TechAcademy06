@@ -6,8 +6,7 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Button, Select, Tag, Pagination, Popconfirm } from "antd";
-import Carousel from "antd/es/carousel";
+import { Button, Select, Tag, Pagination, Popconfirm, Carousel } from "antd";
 import Card from "antd/es/card";
 import Grid from "antd/es/grid";
 import Rate from "antd/es/rate";
@@ -21,8 +20,6 @@ import { CreateNewMovieForm } from "../../components/MovieCreateForm";
 const { Meta } = Card;
 const { Option } = Select;
 const { useBreakpoint } = Grid;
-
-const BASE_URL = "http://localhost:3000/";
 
 interface MovieGridProps {
   editingMovie: IMovie | undefined;
@@ -72,19 +69,29 @@ export const MovieGrid = ({ editingMovie, editingMovieId, setEditingMovieId }: M
     padding: "1.5rem",
   };
 
-  const carouselStyle: React.CSSProperties = {
+  const coverContainerStyle: React.CSSProperties = {
     height: "30rem",
-    color: "#fff",
-    lineHeight: "30rem",
-    textAlign: "center",
-    background: "#364d79",
+    width: "100%",
     overflow: "hidden",
+    position: "relative",
+    margin: 0,
+    padding: 0,
+    backgroundColor: "#f0f2f5",
   };
 
   const imageStyle: React.CSSProperties = {
     width: "100%",
     height: "30rem",
     objectFit: "cover",
+    display: "block",
+    margin: 0,
+  };
+
+  const getImageUrl = (pathOrFilename: string) => {
+    if (!pathOrFilename) return "";
+    if (pathOrFilename.startsWith("http")) return pathOrFilename;
+    const filename = pathOrFilename.split(/[/\\]/).pop();
+    return `/api/uploads/${filename}`;
   };
 
   return (
@@ -115,23 +122,30 @@ export const MovieGrid = ({ editingMovie, editingMovieId, setEditingMovieId }: M
           <Card
             key={currentMovie.movieId}
             hoverable
-            style={{ cursor: "default" }}
+            style={{ cursor: "default", overflow: "hidden" }}
             cover={
-              (currentMovie as any).images && (currentMovie as any).images.length > 0 ? (
-                <Carousel autoplay>
-                  {(currentMovie as any).images.map((img: any) => (
-                    <div key={img.id} style={carouselStyle}>
-                      <img
-                        src={img.path.startsWith("http") ? img.path : `${BASE_URL}${img.path}`}
-                        alt={currentMovie.title}
-                        style={imageStyle}
-                      />
-                    </div>
-                  ))}
-                </Carousel>
-              ) : (
-                <img alt={currentMovie.title} src={currentMovie.urlImage} style={imageStyle} />
-              )
+              <div style={coverContainerStyle}>
+                {currentMovie.images && currentMovie.images.length > 0 ? (
+                  <Carousel
+                    autoplay
+                    effect="fade"
+                    autoplaySpeed={3000}
+                    style={{ width: "100%", height: "100%" }}
+                  >
+                    {currentMovie.images.map((img) => (
+                      <div key={img.id}>
+                        <img
+                          alt={currentMovie.title}
+                          src={getImageUrl(img.filename || img.path)}
+                          style={imageStyle}
+                        />
+                      </div>
+                    ))}
+                  </Carousel>
+                ) : (
+                  <img alt={currentMovie.title} src={currentMovie.urlImage} style={imageStyle} />
+                )}
+              </div>
             }
             actions={[
               favoritesList?.some((fav) => fav.movieId === currentMovie.movieId) ? (

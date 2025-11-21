@@ -31,13 +31,6 @@ import {
   actorReadSchema,
 } from "./actor.schemas";
 
-// import {
-//   actorMovieSchema,
-//   actorMovieCreateSchema,
-//   actorMovieReturnSchema,
-//   actorMovieReadSchema,
-// } from "./actorMovie.schemas";
-
 import {
   directorSchema,
   directorCreateSchema,

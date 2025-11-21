@@ -1,13 +1,11 @@
 FROM node:20
-ARG REACT_APP_BACKEND_URI
-ENV REACT_APP_BACKEND_URI=$REACT_APP_BACKEND_URI
+ARG VITE_BACKEND_URI
+ENV VITE_BACKEND_URI=$VITE_BACKEND_URI
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
-RUN npm install --save-dev @types/node
-RUN npm install dotenv
 
 COPY . .
 RUN npm run build
