@@ -16,8 +16,8 @@ const swaggerOptions: Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000/v1",
-        description: "Development Server",
+        url: "/api/v1",
+        description: "API Server",
       },
     ],
     tags: [
