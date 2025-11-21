@@ -19,6 +19,20 @@ services:
       timeout: 10s
       retries: 5
 
+  redis:
+    image: redis:alpine
+    container_name: redis_cache
+    restart: always
+    networks:
+      - app-network
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
   backend:
     build: ./backend
     container_name: backend
@@ -26,7 +40,10 @@ services:
     networks:
       - app-network
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - DB_HOST=database
@@ -35,37 +52,42 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - PORT=${PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     volumes:
       - ./backend/uploads:/app-backend/uploads
       - ./backend/src:/app-backend/src
     healthcheck:
-      test: ["CMD", "nc", "-z", "database", "3306"]
+      test: ["CMD", "nc", "-z", "localhost", "3000"]
       interval: 10s
       retries: 5
-      start_period: 5s
-      timeout: 5s
+      start_period: 10s
 
   frontend:
     build:
       context: ./frontend
       args:
-        REACT_APP_BACKEND_URI: ${BACKEND_URI}
+        VITE_BACKEND_URI: ${BACKEND_URI}
     container_name: frontend
     restart: always
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - app-network
 
   nginx:
     build: ./nginx
     container_name: nginx
-    depends_on:
-      - backend
-      - frontend
+    restart: always
     ports:
       - 80:80
       - 443:443
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
     networks:
       - app-network
 

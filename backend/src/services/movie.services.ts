@@ -5,6 +5,20 @@ import { ActorModel } from "../models/Actor.model";
 import { DirectorModel } from "../models/Director.model";
 import { movieCompleteReturnSchema } from "../schemas";
 import AppError from "../errors/App.error";
+import redisClient from "../config/redis";
+
+const CACHE_TTL = 300;
+
+const clearMovieCache = async (movieId?: string) => {
+  if (movieId) {
+    await redisClient.del(`movie:${movieId}`);
+  }
+
+  const keys = await redisClient.keys("movies:list:*");
+  if (keys.length > 0) {
+    await redisClient.del(keys);
+  }
+};
 
 const getMovieRelations = () => {
   return [
@@ -27,15 +41,36 @@ const getMovieRelations = () => {
 };
 
 const getMovieByIdWithRelations = async (movieId: string): Promise<MovieModel | null> => {
-  return await MovieModel.findByPk(movieId, {
+  const cacheKey = `movie:${movieId}`;
+  const cachedMovie = await redisClient.get(cacheKey);
+
+  if (cachedMovie) {
+    const parsedMovie = JSON.parse(cachedMovie);
+    return MovieModel.build(parsedMovie, { isNewRecord: false, include: getMovieRelations() });
+  }
+
+  const movie = await MovieModel.findByPk(movieId, {
     include: getMovieRelations(),
   });
+
+  if (movie) {
+    await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(movie));
+  }
+
+  return movie;
 };
 
 const getAllMovies = async (
   { page, perPage, prevPage, nextPage, order, sort }: PaginationParams,
   title?: string
 ): Promise<Pagination> => {
+  const cacheKey = `movies:list:${page}:${perPage}:${sort}:${order}:${title || "all"}`;
+  const cachedList = await redisClient.get(cacheKey);
+
+  if (cachedList) {
+    return JSON.parse(cachedList);
+  }
+
   const whereClause = title ? { title: { [Op.like]: `%${title.toLowerCase()}%` } } : {};
 
   const { rows: movies, count }: { rows: MovieModel[]; count: number } =
@@ -52,12 +87,16 @@ const getAllMovies = async (
     nextPage = null;
   }
 
-  return {
+  const result = {
     prevPage,
     nextPage,
     count,
     data: movies,
   };
+
+  await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(result));
+
+  return result;
 };
 
 const createMovie = async (
@@ -93,6 +132,8 @@ const createMovie = async (
 
   const newMovie: MovieModel | null = await getMovieByIdWithRelations(movie.movieId);
 
+  await clearMovieCache();
+
   return movieCompleteReturnSchema.parse(newMovie);
 };
 
@@ -123,11 +164,15 @@ const updateMovie = async (
   }
 
   const newMovie: MovieModel | null = await getMovieByIdWithRelations(movie.movieId);
+
+  await clearMovieCache(movie.movieId);
+
   return movieCompleteReturnSchema.parse(newMovie);
 };
 
 const deleteMovie = async (movie: MovieModel): Promise<void> => {
   await movie!.destroy();
+  await clearMovieCache(movie.movieId);
 };
 
 export default { getAllMovies, createMovie, deleteMovie, updateMovie, getMovieByIdWithRelations };
