@@ -5,7 +5,8 @@ import { ActorModel } from "../models/Actor.model";
 import { DirectorModel } from "../models/Director.model";
 import { movieCompleteReturnSchema } from "../schemas";
 import AppError from "../errors/App.error";
-import redisClient from "../config/redis";
+import redisClient, { redisPub } from "../config/redis";
+import Logger from "../config/logger";
 
 const CACHE_TTL = 300;
 
@@ -133,6 +134,13 @@ const createMovie = async (
   const newMovie: MovieModel | null = await getMovieByIdWithRelations(movie.movieId);
 
   await clearMovieCache();
+
+  Logger.info(`Publishing event to movie-channel for movie: ${movie.title}`);
+  await redisPub.publish(
+    "movie-channel",
+    JSON.stringify({ event: "MOVIE_CREATED", title: payLoad.title, movieId: movie.movieId })
+  );
+  Logger.info("Event published successfully.");
 
   return movieCompleteReturnSchema.parse(newMovie);
 };

@@ -6,7 +6,7 @@ import middlewares from "./middlewares";
 import cors, { CorsOptions } from "cors";
 import path from "path";
 import requestLogger from "./middlewares/morgan.middleware";
-import Logger from "./config/logger";
+import { initSubscriber } from "./services/notification.service";
 
 const app: Application = express();
 
@@ -33,5 +33,7 @@ app.use("/v1/directorMovie", routes.directorMovieRoutes);
 app.use(middlewares.handleError);
 
 setupSwagger(app);
+
+initSubscriber();
 
 export default app;

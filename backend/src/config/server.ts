@@ -1,4 +1,4 @@
-import app from "..";
+import app from "../index";
 import sequelize from "./database";
 import Logger from "./logger";
 
