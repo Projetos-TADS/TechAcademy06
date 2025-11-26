@@ -51,6 +51,8 @@ services:
       - DB_NAME=${DB_NAME}
       - SECRET_KEY=${SECRET_KEY}
       - EXPIRES_IN=${EXPIRES_IN}
+    volumes:
+      - uploads_data:/app-backend/uploads
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "3001"]
       interval: 10s
@@ -78,7 +80,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     volumes:
-      - ./services/catalog-service/uploads:/app-backend/uploads
+      - uploads_data:/app-backend/uploads
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "3002"]
       interval: 10s
@@ -116,6 +118,7 @@ services:
 
 volumes:
   mysql_data:
+  uploads_data:
 
 networks:
   app-network:

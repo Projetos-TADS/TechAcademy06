@@ -25,7 +25,7 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 app.use(json());
 
-const uploadsPath = path.resolve(__dirname, "../../uploads");
+const uploadsPath = path.resolve(__dirname, "../uploads");
 
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
