@@ -1,3 +1,3 @@
-import validateDate from "../utils/dateValidators";
+import validateDate from "./dateValidators";
 
 export { validateDate };

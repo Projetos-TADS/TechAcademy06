@@ -3,7 +3,7 @@ import { ActorModel } from "../models/Actor.model";
 import { CastCompleteReturn } from "../interfaces";
 import { castCompleteReturnSchema } from "../schemas";
 import { AppError } from "../errors";
-import { movieServices } from "../services";
+import { movieServices } from ".";
 
 const addActorToMovie = async (
   movie: MovieModel,

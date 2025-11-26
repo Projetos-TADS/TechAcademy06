@@ -89,9 +89,13 @@ export const MovieGrid = ({ editingMovie, editingMovieId, setEditingMovieId }: M
 
   const getImageUrl = (pathOrFilename: string) => {
     if (!pathOrFilename) return "";
-    if (pathOrFilename.startsWith("http")) return pathOrFilename;
-    const filename = pathOrFilename.split(/[/\\]/).pop();
-    return `/api/uploads/${filename}`;
+    if (pathOrFilename.startsWith("http://") || pathOrFilename.startsWith("https://")) {
+      return pathOrFilename;
+    }
+
+    const cleanPath = pathOrFilename.startsWith("/") ? pathOrFilename.slice(1) : pathOrFilename;
+
+    return `${window.location.origin}/uploads/${cleanPath}`;
   };
 
   return (

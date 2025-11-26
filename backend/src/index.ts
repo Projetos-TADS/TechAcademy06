@@ -1,7 +1,7 @@
 import "express-async-errors";
 import express, { Application } from "express";
 import { setupSwagger } from "./config/swagger";
-import routes from "./routes/";
+import routes from "./routes";
 import middlewares from "./middlewares";
 import cors, { CorsOptions } from "cors";
 import path from "path";
