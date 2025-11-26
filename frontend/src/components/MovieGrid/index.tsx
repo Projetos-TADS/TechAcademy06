@@ -95,7 +95,7 @@ export const MovieGrid = ({ editingMovie, editingMovieId, setEditingMovieId }: M
 
     const cleanPath = pathOrFilename.startsWith("/") ? pathOrFilename.slice(1) : pathOrFilename;
 
-    return `${window.location.origin}/api/uploads/${cleanPath}`;
+    return `${window.location.origin}/uploads/${cleanPath}`;
   };
 
   return (
