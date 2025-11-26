@@ -1,5 +1,10 @@
-FROM nginx:latest
-WORKDIR /etc/nginx
-COPY . .
-RUN openssl req -x509 -newkey rsa:2048 -keyout chave.pem \
--out cert.pem -days 365 -nodes -config openssl-san.cnf
+FROM nginx:alpine
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+COPY server.crt /etc/ssl/certs/server.crt
+COPY server.key /etc/ssl/private/server.key
+
+EXPOSE 80 443

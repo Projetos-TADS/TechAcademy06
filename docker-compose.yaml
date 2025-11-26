@@ -33,9 +33,32 @@ services:
       timeout: 10s
       retries: 5
 
-  backend:
-    build: ./backend
-    container_name: backend
+  auth-service:
+    build: ./services/auth-service
+    container_name: auth-service
+    restart: always
+    networks:
+      - app-network
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - PORT=3001
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - EXPIRES_IN=${EXPIRES_IN}
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3001"]
+      interval: 10s
+      retries: 5
+
+  catalog-service:
+    build: ./services/catalog-service
+    container_name: catalog-service
     restart: always
     networks:
       - app-network
@@ -45,24 +68,21 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - NODE_ENV=${NODE_ENV}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - PORT=3002
       - DB_HOST=database
       - DB_PORT=3306
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - PORT=${PORT}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
-      - ./backend/uploads:/app-backend/uploads
-      - ./backend/src:/app-backend/src
+      - ./services/catalog-service/uploads:/app-backend/uploads
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "3000"]
+      test: ["CMD", "nc", "-z", "localhost", "3002"]
       interval: 10s
       retries: 5
-      start_period: 10s
 
   frontend:
     build:
@@ -72,8 +92,8 @@ services:
     container_name: frontend
     restart: always
     depends_on:
-      backend:
-        condition: service_healthy
+      auth-service:
+        condition: service_started
     networks:
       - app-network
 
@@ -85,8 +105,10 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      backend:
-        condition: service_healthy
+      auth-service:
+        condition: service_started
+      catalog-service:
+        condition: service_started
       frontend:
         condition: service_started
     networks:
